@@ -1,0 +1,27 @@
+# 每日最多举报次数
+day-max: 20
+
+# 举报冷却时间(秒)
+cold: 2
+
+# 协管
+admin-players: []
+
+# 管理举报
+report-btn:
+  - name: "踢出游戏"
+    cmd: "kick @target @msg"
+  - name: "封禁玩家"
+    cmd: "ban @target @msg"
+  - name: "警告"
+    cmd: "rp m @target @msg"
+  - name: "不处理"
+    cmd: ""
+
+
+mysql:
+  port: 3306
+  database: "root"
+  username: "root"
+  password: "123456"
+  host: "127.0.0.1"

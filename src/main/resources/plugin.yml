@@ -1,0 +1,9 @@
+name: Report
+main: org.sobadfish.report.ReportMainClass
+version: 1.0.6
+api:
+  - 1.0.11
+  - 3.0.0
+softdepend:
+  - EasyMySQL
+author: sobadfish
