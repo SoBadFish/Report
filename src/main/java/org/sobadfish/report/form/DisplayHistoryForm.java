@@ -76,14 +76,14 @@ public class DisplayHistoryForm {
                    for(Report report: reports){
                        String[] rel = report.getReportMessage().split("&");
                        stringBuilder.append(" &7[").append(report.getTime()).append("]&r &e")
-                               .append(report.getTarget()).append(" &7:>>\n&r  ").append(" (")
-                               .append(rel[0]).append("):\n     ").append(rel[1]).append("&r\n");
+                               .append(report.getTarget()).append(" &7:>>&r  ").append(" (")
+                               .append(rel[0]).append("):     ").append(rel[1]).append("&r\n");
                    }
                    stringBuilder.append("\n&r&l处理记录: ").append("\n");
                    StringBuilder mg = new StringBuilder();
                    for(Report report: reports){
                        if(!"".equalsIgnoreCase(report.getManager())){
-                           mg.append(" &l&7[&a").append(report.getManagerTime()).append("&7] &a")
+                           mg.append(" &l&7[&e").append(report.getManagerTime()).append("&7] &2")
                                    .append(report.getManager()).append("&r: ").append(report.getManagerMsg()).append("&r\n");
                        }
 
