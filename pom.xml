@@ -6,7 +6,7 @@
 
     <groupId>org.sobadfish.report</groupId>
     <artifactId>Report</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <dependencies>
         <dependency>
             <groupId>cn.nukkit</groupId>
