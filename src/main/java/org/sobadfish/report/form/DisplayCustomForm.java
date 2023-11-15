@@ -45,7 +45,8 @@ public class DisplayCustomForm {
 
         FormWindowCustom formWindowCustom = new FormWindowCustom(TextFormat.colorize('&',"&b举报系统"));
         Config msg = ReportMainClass.getMainClass().getMessageConfig();
-        formWindowCustom.addElement(new ElementLabel(msg.getString("report-form-msg")));
+        formWindowCustom.addElement(new ElementLabel(TextFormat.colorize('&'
+                ,msg.getString("report-form-msg"))));
         List<String> onLinePlayers = new ArrayList<>();
         for(Player online: Server.getInstance().getOnlinePlayers().values()){
             if(online.equals(player)){
@@ -63,7 +64,11 @@ public class DisplayCustomForm {
         }
 
         formWindowCustom.addElement(new ElementDropdown("请选择举报的玩家",onLinePlayers,onLinePlayers.size()-1));
-        formWindowCustom.addElement(new ElementDropdown("请选择举报原因",msg.getStringList("report-list")));
+        List<String> showMsg = new ArrayList<>();
+        for(String s:msg.getStringList("report-list") ){
+            showMsg.add(TextFormat.colorize('&',s));
+        }
+        formWindowCustom.addElement(new ElementDropdown("请选择举报原因",showMsg));
         formWindowCustom.addElement(new ElementInput("请输入举报理由"));
 
         player.showFormWindow(formWindowCustom,getId());
@@ -74,7 +79,7 @@ public class DisplayCustomForm {
     public void onListener(Player player,FormResponseCustom responseCustom){
         PlayerInfo info = ReportMainClass.getMainClass().getPlayerInfoManager().getInfo(player.getName());
         String playerName = responseCustom.getDropdownResponse(1).getElementContent();
-        String msg =  responseCustom.getDropdownResponse(2).getElementContent()+"&"+responseCustom.getInputResponse(3).replace("&","");
+        String msg =  responseCustom.getDropdownResponse(2).getElementContent()+"&"+TextFormat.colorize('&',responseCustom.getInputResponse(3));
         if(info != null){
             switch (info.addReport(playerName)){
                 case SUCCESS:

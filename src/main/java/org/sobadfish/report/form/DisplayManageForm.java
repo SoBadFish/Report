@@ -60,8 +60,8 @@ public class DisplayManageForm {
         for(Report report: reports){
             String[] rel = report.getReportMessage().split("&");
             stringBuilder.append(" &7[").append(report.getTime()).append("]&r &e")
-                    .append(report.getTarget()).append(" &7:>>&r  ").append(" (")
-                    .append(rel[0]).append("):     ").append(rel[1]).append("&r\n");
+                    .append(report.getTarget()).append(" &7:>>&r\n").append(" &7(&l")
+                    .append(rel[0]).append("&r&7)&r: ").append(rel[1]).append("&r\n");
         }
         formWindowCustom.addElement(new ElementLabel(TextFormat.colorize('&',stringBuilder.toString())));
         List<String> names = new ArrayList<>();
