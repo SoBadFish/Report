@@ -4,8 +4,6 @@ day-max: 20
 # 举报冷却时间(秒)
 cold: 2
 
-# 协管
-admin-players: []
 
 # 管理举报
 report-btn:
