@@ -74,7 +74,8 @@ public class DisplayHistoryForm {
                    stringBuilder.append("&l&r被举报玩家: &r&a").append(target).append("&r\n\n");
                    stringBuilder.append("&r&l举报原因:&r \n");
                    for(Report report: reports){
-                       String[] rel = report.getReportMessage().split("&");
+                       String[] rel = Utils.splitMsg(report.getReportMessage());
+
                        stringBuilder.append(" &7[").append(report.getTime()).append("]&r &e")
                                .append(report.getTarget()).append(" &7:>>&r\n").append("&7(&l")
                                .append(rel[0]).append("&r&7)&r: ").append(rel[1]).append("&r\n");

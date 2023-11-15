@@ -64,4 +64,16 @@ public class Utils {
             return null;
         }
     }
+
+    public static String[] splitMsg(String msg){
+        String[] rel = msg.split("&");
+        if(rel.length <= 1){
+            String rr = rel[0].trim();
+            if("".equalsIgnoreCase(rr)){
+                rr = "-";
+            }
+            rel = new String[]{rr,"-"};
+        }
+        return rel;
+    }
 }
