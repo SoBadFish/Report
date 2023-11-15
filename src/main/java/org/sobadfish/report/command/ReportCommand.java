@@ -67,6 +67,7 @@ public class ReportCommand extends Command {
                                     ReportMainClass.sendMessageToObject("&c你已不是协管！",online);
                                 }
                                 ReportMainClass.sendMessageToObject("&a成功取消玩家 "+player+" 的协管身份", commandSender);
+                                ReportMainClass.getMainClass().saveAdminPlayers();
                             }else{
                                 players.add(player);
                                 ReportMainClass.getMainClass().saveAdminPlayers();
