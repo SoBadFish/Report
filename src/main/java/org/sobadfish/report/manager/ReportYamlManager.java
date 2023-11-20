@@ -140,9 +140,16 @@ public class ReportYamlManager implements IDataManager{
     public ArrayList<Report> getReports(String player) {
         ArrayList<Report> delegates = new ArrayList<>();
         for (Report report : reports){
-            if(report.delete == 0 && report.getPlayer().equalsIgnoreCase(player)){
-                delegates.add(report);
+            if(player != null){
+                if(report.delete == 0 && report.getPlayer().equalsIgnoreCase(player)){
+                    delegates.add(report);
+                }
+            }else{
+                if(report.delete == 0){
+                    delegates.add(report);
+                }
             }
+
         }
         return delegates;
     }
