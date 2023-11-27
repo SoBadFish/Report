@@ -61,7 +61,7 @@ public class DisplayHistoryForm {
         for(String s:reportsList){
             List<Report> reps = ReportMainClass.getDataManager().getHistoryReports(s);
             Report rp = reps.get(0);
-            String s2 = s+"\n&c[New]&4"+rp.getManagerTime()+" &r"+reps.size()+" &2条举报记录";
+            String s2 = s+"\n&c[New]"+rp.getManagerTime()+" &r"+reps.size()+" &2条举报记录";
            buttons.add(new BaseClickButton(new ElementButton(TextFormat.colorize('&',s2),new ElementButtonImageData("path"
                    ,"textures/ui/Friend2")),s) {
                @Override
