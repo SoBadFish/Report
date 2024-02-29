@@ -130,10 +130,10 @@ public class ReportSqlManager implements IDataManager{
         if(target != null){
             if(player == null){
                 data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
-                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" like ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,"%"+target+"%"));
+                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,target));
             }else{
                 data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
-                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" like ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" like ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,"%"+target+"%"),new ChunkSqlType(3,"%"+player+"%"));
+                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" = ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,target),new ChunkSqlType(3,player));
             }
         }else{
             if(player == null){
@@ -141,7 +141,7 @@ public class ReportSqlManager implements IDataManager{
                         +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
             }else{
                 data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
-                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" like ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,"%"+player+"%"));
+                        +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,player));
             }
 
         }
@@ -170,8 +170,8 @@ public class ReportSqlManager implements IDataManager{
         ArrayList<Report> reports = new ArrayList<>();
         SqlDataList<SqlData> data;
         if(player != null){
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" like ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc"
-                    ,new ChunkSqlType(1,"%"+player+"%"),new ChunkSqlType(2,"0"));
+            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc"
+                    ,new ChunkSqlType(1,player),new ChunkSqlType(2,"0"));
         }else{
             data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
         }
@@ -203,8 +203,8 @@ public class ReportSqlManager implements IDataManager{
         ArrayList<Report> reports = new ArrayList<>();
         SqlDataList<SqlData> data;
         if(player != null){
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" like ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc"
-                    ,new ChunkSqlType(1,"%"+player+"%"),new ChunkSqlType(2,"1"));
+            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc"
+                    ,new ChunkSqlType(1,player),new ChunkSqlType(2,"1"));
         }else{
             data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
         }
