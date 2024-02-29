@@ -3,15 +3,14 @@ package org.sobadfish.report.form;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.ConsoleCommandSender;
-import cn.nukkit.form.element.ElementDropdown;
-import cn.nukkit.form.element.ElementInput;
-import cn.nukkit.form.element.ElementLabel;
+import cn.nukkit.form.element.*;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.report.ReportMainClass;
 import org.sobadfish.report.config.Report;
 import org.sobadfish.report.config.ReportConfig;
+import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.tools.Utils;
 
 import java.util.ArrayList;
@@ -30,6 +29,9 @@ public class DisplayManageForm {
 
     private int reportId;
 
+    private static final int ITEM_SIZE = 20;
+
+
     public static int getRid(){
         return Utils.rand(31000,41000);
     }
@@ -47,17 +49,17 @@ public class DisplayManageForm {
 
 
     public void disPlay(Player player,String target){
-        ArrayList<Report> reports = ReportMainClass.getDataManager().getReports(target);
-        if(reports.size() == 0){
+        Page<Report> reports = ReportMainClass.getDataManager().getReports(target,0);
+        if(reports.total == 0){
             return;
         }
         this.target = target;
-        reportId = reports.get(0).getId();
+        reportId = reports.data.get(0).getId();
         FormWindowCustom formWindowCustom = new FormWindowCustom(TextFormat.colorize('&',"&b举报管理 &7—— &2"+target));
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("&l&r被举报玩家: &r&a").append(target).append("&r\n\n");
         stringBuilder.append("&r&l举报原因:&r \n");
-        for(Report report: reports){
+        for(Report report: reports.data){
             String[] rel = Utils.splitMsg(report.getReportMessage());
             stringBuilder.append(" &7[").append(report.getTime()).append("]&r &e")
                     .append(report.getTarget()).append(" &7:>>&r\n").append(" &7(&l")
@@ -74,6 +76,8 @@ public class DisplayManageForm {
         DISPLAY_FROM.put(player,this);
 
     }
+
+
 
     public void onListener(Player player, FormResponseCustom responseCustom){
         if(target == null){

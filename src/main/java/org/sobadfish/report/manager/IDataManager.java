@@ -1,6 +1,7 @@
 package org.sobadfish.report.manager;
 
 import org.sobadfish.report.config.Report;
+import org.sobadfish.report.entity.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +27,20 @@ public interface IDataManager {
      * 获取被举报的玩家
      * @return 被举报的玩家名
      * */
-    List<String> getPlayers();
+    Page<String> getPlayers(int page);
 
     /**
      * 获取被举报的玩家
      * @return 被举报的玩家名
      * */
-    List<String> getHistoryPlayers(String player,String target);
+    Page<String> getHistoryPlayers(String player,String target,int page);
 
     /**
      * 获取举报数据
      * @param player 举报玩家(可不填)
      * @return 举报的数据 {@link org.sobadfish.report.config.Report}
      * */
-    ArrayList<Report> getReports(String player);
+    Page<Report> getReports(String player,int page);
 
     /**
      * 删除 玩家的举报记录
@@ -52,5 +53,5 @@ public interface IDataManager {
      * @param player 举报玩家(可不填)
      * @return 举报的数据 {@link org.sobadfish.report.config.Report}
      * */
-    ArrayList<Report> getHistoryReports(String player);
+    Page<Report> getHistoryReports(String player,int page);
 }

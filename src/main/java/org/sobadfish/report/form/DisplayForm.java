@@ -7,6 +7,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.report.ReportMainClass;
 import org.sobadfish.report.config.Report;
+import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.tools.Utils;
 
 import java.util.ArrayList;
@@ -19,15 +20,16 @@ import java.util.List;
  */
 public class DisplayForm {
 
-    private static final int ITEM_SIZE = 6;
 
     public static LinkedHashMap<Player, DisplayForm> DISPLAY_FROM = new LinkedHashMap<>();
 
     private ArrayList<BaseClickButton> clickButtons = new ArrayList<>();
 
-    private List<String> players = new ArrayList<>();
+    private Page<String> players = new Page<>(0,new ArrayList<>());
 
-    private int page = 1;
+    private static final int ITEM_SIZE = 20;
+
+    private int page = 0;
 
     private int id;
 
@@ -54,18 +56,18 @@ public class DisplayForm {
     public void disPlay(Player player){
         FormWindowSimple simple = new FormWindowSimple(TextFormat.colorize('&',"&b举报系统"),"");
         ArrayList<BaseClickButton> buttons = new ArrayList<>();
-        if(players.size() == 0) {
-            players = ReportMainClass.getDataManager().getPlayers();
+        if(players.total == 0) {
+            players = ReportMainClass.getDataManager().getPlayers(page);
         }
-        if(players.size() > 0){
-            for(String s: getArrayListByPage(page,players)){
-                List<Report> reports = ReportMainClass.getDataManager().getReports(s);
-                if(reports.size() == 0){
+        if(players.total > 0){
+            for(String s: players.data){
+                Page<Report> reports = ReportMainClass.getDataManager().getReports(s,0);
+                if(reports.total == 0){
                     continue;
                 }
-                Report nRepot = reports.get(0);
+                Report nRepot = reports.data.get(0);
                 String str = s.trim();
-                str += "\n&4[New] &c"+nRepot.getTime()+" &r "+reports.size()+" &2条相关记录";
+                str += "\n&4[New] &c"+nRepot.getTime()+" &r "+reports.total+" &2条相关记录";
                 buttons.add(new BaseClickButton(new ElementButton(TextFormat.colorize('&',str),new ElementButtonImageData("path"
                         ,"textures/ui/Friend2")),s) {
                     @Override
@@ -80,18 +82,18 @@ public class DisplayForm {
             ReportMainClass.sendMessageToObject("&c无举报记录",player);
             return;
         }
-        if(mathPage((ArrayList<?>) players) > 1) {
-            if (page == 1) {
+        if(players.total > ITEM_SIZE){
+            if(page == 0){
                 addNext(buttons);
-            }else if(page != mathPage((ArrayList<?>) players)){
+            }else if(page * ITEM_SIZE < players.total){
                 addLast(buttons);
                 addNext(buttons);
-
             }else{
                 addLast(buttons);
-
             }
         }
+
+
         for(BaseClickButton button: buttons){
             simple.addButton(button.getButton());
         }
@@ -131,22 +133,22 @@ public class DisplayForm {
         this.id = id;
     }
 
-    public <T> ArrayList<T> getArrayListByPage(int page, List<T> list){
-        ArrayList<T> button = new ArrayList<>();
-        for(int i = (page - 1) * ITEM_SIZE; i < ITEM_SIZE + ((page - 1) * ITEM_SIZE);i++){
-            if(list.size() > i){
-                button.add(list.get(i));
-            }
-        }
-        return button;
-    }
-
-    public int mathPage(ArrayList<?> button){
-        if(button.size() == 0){
-            return 1;
-        }
-        return (int) Math.ceil(button.size() / (double)ITEM_SIZE);
-    }
+//    public <T> ArrayList<T> getArrayListByPage(int page, List<T> list){
+//        ArrayList<T> button = new ArrayList<>();
+//        for(int i = (page - 1) * ITEM_SIZE; i < ITEM_SIZE + ((page - 1) * ITEM_SIZE);i++){
+//            if(list.size() > i){
+//                button.add(list.get(i));
+//            }
+//        }
+//        return button;
+//    }
+//
+//    public int mathPage(ArrayList<?> button){
+//        if(button.size() == 0){
+//            return 1;
+//        }
+//        return (int) Math.ceil(button.size() / (double)ITEM_SIZE);
+//    }
 
 
 

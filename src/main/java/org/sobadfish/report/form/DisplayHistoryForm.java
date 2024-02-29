@@ -7,6 +7,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.utils.TextFormat;
 import org.sobadfish.report.ReportMainClass;
 import org.sobadfish.report.config.Report;
+import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.tools.Utils;
 
 import java.util.ArrayList;
@@ -19,11 +20,16 @@ import java.util.List;
  */
 public class DisplayHistoryForm {
 
+    private static final int ITEM_SIZE = 20;
+
+
     private ArrayList<BaseClickButton> clickButtons = new ArrayList<>();
 
     public static LinkedHashMap<Player, DisplayHistoryForm> DISPLAY_FROM = new LinkedHashMap<>();
 
-    private final int id;
+    private int id;
+
+    private int page = 0;
 
     public static int getRid(){
         return Utils.rand(31000,41000);
@@ -45,23 +51,25 @@ public class DisplayHistoryForm {
     }
 
     public void disPlay(Player player,String target) {
+
         FormWindowSimple simple = new FormWindowSimple(TextFormat.colorize('&', "&b举报系统 &7—— &e记录"), "");
 
-        int reportsSize = ReportMainClass.getDataManager().getHistoryPlayers(player.getName(),target).size();
 
-        List<String> reportsList =  ReportMainClass.getDataManager().getHistoryPlayers(null,target);
+        Page<String> reportsSize = ReportMainClass.getDataManager().getHistoryPlayers(player.getName(),target,0);
 
-        if(reportsList.size() == 0){
+        Page<String> reportsList =  ReportMainClass.getDataManager().getHistoryPlayers(null,target,page);
+
+        if(reportsList.total == 0){
             ReportMainClass.sendMessageToObject("&c暂无处理记录",player);
             return;
         }
         ArrayList<BaseClickButton> buttons = new ArrayList<>();
-        String str = "服务器累计处理 "+reportsList.size()+" 条举报! 您已处理 "+reportsSize+" 条";
+        String str = "服务器累计处理 "+reportsList.total+" 条举报! 您已处理 "+reportsSize.total+" 条";
         simple.setContent(str);
-        for(String s:reportsList){
-            List<Report> reps = ReportMainClass.getDataManager().getHistoryReports(s);
-            Report rp = reps.get(0);
-            String s2 = s+"\n&c[New]"+rp.getManagerTime()+" &r"+reps.size()+" &2条举报记录";
+        for(String s:reportsList.data){
+            Page<Report> reps = ReportMainClass.getDataManager().getHistoryReports(s,0);
+            Report rp = reps.data.get(0);
+            String s2 = s+"\n&c[New]"+rp.getManagerTime()+" &r"+reps.total+" &2条举报记录";
            buttons.add(new BaseClickButton(new ElementButton(TextFormat.colorize('&',s2),new ElementButtonImageData("path"
                    ,"textures/ui/Friend2")),s) {
                @Override
@@ -70,10 +78,10 @@ public class DisplayHistoryForm {
                            ,"");
                    String target = getTarget();
                    StringBuilder stringBuilder = new StringBuilder();
-                   List<Report> reports = ReportMainClass.getDataManager().getHistoryReports(target);
+                   Page<Report> reports = ReportMainClass.getDataManager().getHistoryReports(target,0);
                    stringBuilder.append("&l&r被举报玩家: &r&a").append(target).append("&r\n\n");
                    stringBuilder.append("&r&l举报原因:&r \n");
-                   for(Report report: reports){
+                   for(Report report: reports.data){
                        String[] rel = Utils.splitMsg(report.getReportMessage());
 
                        stringBuilder.append(" &7[").append(report.getTime()).append("]&r &e")
@@ -82,7 +90,7 @@ public class DisplayHistoryForm {
                    }
                    stringBuilder.append("\n&r&l处理记录: ").append("\n");
                    StringBuilder mg = new StringBuilder();
-                   for(Report report: reports){
+                   for(Report report: reports.data){
                        if(!"".equalsIgnoreCase(report.getManager())){
                            mg.append(" &l&7[&e").append(report.getManagerTime()).append("&7] &2")
                                    .append(report.getManager()).append("&r: ").append(report.getManagerMsg()).append("&r\n");
@@ -96,15 +104,59 @@ public class DisplayHistoryForm {
            });
 
         }
+
+        if(reportsList.total > ITEM_SIZE){
+            if(page == 0){
+                addNext(buttons,target);
+            }else if(page * ITEM_SIZE < reportsList.total){
+                addLast(buttons,target);
+                addNext(buttons,target);
+            }else{
+                addLast(buttons,target);
+            }
+        }
+
+
         for(BaseClickButton button: buttons){
             simple.addButton(button.getButton());
         }
+
 
         setClickButtons(buttons);
         player.showFormWindow(simple,getId());
         DISPLAY_FROM.put(player,this);
 
 
+    }
+
+    private void addLast(ArrayList<BaseClickButton> buttons,String target){
+        buttons.add(new BaseClickButton(new ElementButton("上一页", new ElementButtonImageData("path", "textures/ui/arrow_dark_left_stretch")), null) {
+            @Override
+            public void onClick(Player player) {
+                DisplayHistoryForm from = DISPLAY_FROM.get(player);
+                from.setId(getRid());
+                from.page--;
+                from.disPlay(player,target);
+
+
+            }
+        });
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private void addNext(ArrayList<BaseClickButton> buttons,String target){
+        buttons.add(new BaseClickButton(new ElementButton("下一页", new ElementButtonImageData("path", "textures/ui/arrow_dark_right_stretch")), null) {
+            @Override
+            public void onClick(Player player) {
+                DisplayHistoryForm from = DISPLAY_FROM.get(player);
+                from.setId(getRid());
+                from.page++;
+                from.disPlay(player,target);
+            }
+        });
     }
 
     public void setClickButtons(ArrayList<BaseClickButton> clickButtons) {

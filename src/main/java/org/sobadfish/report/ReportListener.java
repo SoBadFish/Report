@@ -7,6 +7,7 @@ import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.response.FormResponseSimple;
 import org.sobadfish.report.config.PlayerInfo;
+import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.form.DisplayCustomForm;
 import org.sobadfish.report.form.DisplayForm;
 import org.sobadfish.report.form.DisplayHistoryForm;
@@ -26,9 +27,9 @@ public class ReportListener implements Listener {
         PlayerInfo playerInfo = new PlayerInfo(event.getPlayer().getName());
         ReportMainClass.getMainClass().getPlayerInfoManager().addPlayerInfo(playerInfo);
         if(event.getPlayer().isOp()){
-            List<String> strings = ReportMainClass.getDataManager().getPlayers();
-            if(strings.size() > 0) {
-                ReportMainClass.sendMessageToObject("&l欢迎管理员来到服务器 当前有&a " + strings.size() + "&r 条举报记录 &e请注意处理", event.getPlayer());
+            Page<String> strings = ReportMainClass.getDataManager().getPlayers(0);
+            if(strings.total > 0) {
+                ReportMainClass.sendMessageToObject("&l欢迎管理员来到服务器 当前有&a " + strings.total + "&r 条举报记录 &e请注意处理", event.getPlayer());
             }
         }
     }

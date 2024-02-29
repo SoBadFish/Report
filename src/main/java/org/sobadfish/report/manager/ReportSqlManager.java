@@ -8,6 +8,8 @@ import com.smallaswater.easysql.mysql.utils.Types;
 import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
 import com.smallaswater.easysql.v3.mysql.utils.SelectType;
 import org.sobadfish.report.config.Report;
+import org.sobadfish.report.entity.Page;
+import org.sobadfish.report.entity.SqlCommand;
 import org.sobadfish.report.tools.Utils;
 
 import java.util.ArrayList;
@@ -103,58 +105,80 @@ public class ReportSqlManager implements IDataManager{
      * @return 被举报的玩家名
      * */
     @Override
-    public List<String> getPlayers(){
+    public Page<String> getPlayers(int page){
         if(tableDelete){
-            return new ArrayList<>();
+            return new Page<>(0,new ArrayList<>());
         }
-        SqlDataList<SqlData> data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_TIME+" FROM "
-                +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
+        Page<SqlData> pg = Page.selectPage(sqlManager,new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_TIME+" FROM "
+                +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0")),
+                page,20);
+//        SqlDataList<SqlData> data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_TIME+" FROM "
+//                +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
         ArrayList<String> strings = new ArrayList<>();
-        for(SqlData data1: data){
+        for(SqlData data1: pg.data){
             String n = data1.getString(SQL_COLUMN_PLAYER_NAME);
             if("".equalsIgnoreCase(n)){
                 continue;
             }
             strings.add(n);
         }
-        return strings;
+        return new Page<>(pg.total, strings);
+//        return strings;
     }
 
     @Override
-    public List<String> getHistoryPlayers(String player,String target) {
+    public Page<String> getHistoryPlayers(String player,String target,int page) {
         if(tableDelete){
-            return new ArrayList<>();
+            return new Page<>(0,new ArrayList<>());
         }
-        SqlDataList<SqlData> data;
+//        SqlDataList<SqlData> data;
+        SqlCommand sqlCommand;
+
+
+
 
         if(target != null){
             if(player == null){
-                data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
+//                data = sqlManager.getData();
+                sqlCommand = new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
                         +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,target));
             }else{
-                data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
+//                data = sqlManager.getData();
+                sqlCommand = new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
                         +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_PLAYER+" = ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,target),new ChunkSqlType(3,player));
             }
         }else{
             if(player == null){
-                data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
+//                data = sqlManager.getData();
+                sqlCommand = new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
                         +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
             }else{
-                data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
+//                data = sqlManager.getData();
+                sqlCommand = new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" FROM "
                         +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? AND "+SQL_COLUMN_REPORT_ADMIN_PLAYER+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"),new ChunkSqlType(2,player));
             }
 
         }
 
+        Page<SqlData> pg = Page.selectPage(sqlManager,sqlCommand,page,20);
+
         ArrayList<String> strings = new ArrayList<>();
-        for(SqlData data1: data){
+        for(SqlData data1: pg.data){
             String n = data1.getString(SQL_COLUMN_PLAYER_NAME);
             if("".equalsIgnoreCase(n)){
                 continue;
             }
             strings.add(n);
         }
-        return strings;
+        return new Page<>(pg.total, strings);
+//        for(SqlData data1: data){
+//            String n = data1.getString(SQL_COLUMN_PLAYER_NAME);
+//            if("".equalsIgnoreCase(n)){
+//                continue;
+//            }
+//            strings.add(n);
+//        }
+//        return strings;
     }
 
     /**
@@ -163,19 +187,21 @@ public class ReportSqlManager implements IDataManager{
      * @return 举报的数据 {@link org.sobadfish.report.config.Report}
      * */
     @Override
-    public ArrayList<Report> getReports(String player){
+    public Page<Report> getReports(String player,int page){
         if(tableDelete){
-            return new ArrayList<>();
+            return new Page<>(0,new ArrayList<>());
         }
         ArrayList<Report> reports = new ArrayList<>();
-        SqlDataList<SqlData> data;
+//        SqlDataList<SqlData> data;
+        SqlCommand sqlCommand;
         if(player != null){
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc"
+            sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc"
                     ,new ChunkSqlType(1,player),new ChunkSqlType(2,"0"));
         }else{
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
+            sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
         }
-        for(SqlData data1: data){
+        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,20);
+        for(SqlData data1: data.data){
             Report report = new Report(
                     data1.getInt(SQL_COLUMN_ID),
                     data1.getString(SQL_COLUMN_PLAYER_NAME),
@@ -187,7 +213,7 @@ public class ReportSqlManager implements IDataManager{
             report.setManagerTime( data1.getString(SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME));
             reports.add(report);
         }
-        return reports;
+        return new Page<>(data.total,reports);
     }
 
     /**
@@ -196,19 +222,21 @@ public class ReportSqlManager implements IDataManager{
      * @return 举报的数据 {@link org.sobadfish.report.config.Report}
      * */
     @Override
-    public ArrayList<Report> getHistoryReports(String player){
+    public Page<Report> getHistoryReports(String player,int page){
         if(tableDelete){
-            return new ArrayList<>();
+            return new Page<>(0,new ArrayList<>());
         }
         ArrayList<Report> reports = new ArrayList<>();
-        SqlDataList<SqlData> data;
+//        SqlDataList<SqlData> data;
+        SqlCommand sqlCommand;
         if(player != null){
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc"
+            sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_PLAYER_NAME+" = ? AND "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc"
                     ,new ChunkSqlType(1,player),new ChunkSqlType(2,"1"));
         }else{
-            data = sqlManager.getData("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
+            sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
         }
-        for(SqlData data1: data){
+        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,20);
+        for(SqlData data1: data.data){
             Report report = new Report(
                     data1.getInt(SQL_COLUMN_ID),
                     data1.getString(SQL_COLUMN_PLAYER_NAME),
@@ -220,7 +248,7 @@ public class ReportSqlManager implements IDataManager{
             report.setManagerTime( data1.getString(SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME));
             reports.add(report);
         }
-        return reports;
+        return new Page<>(data.total,reports);
     }
 
     /**

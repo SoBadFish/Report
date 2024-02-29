@@ -3,6 +3,7 @@ package org.sobadfish.report.manager;
 import cn.nukkit.utils.Config;
 import org.sobadfish.report.ReportMainClass;
 import org.sobadfish.report.config.Report;
+import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.tools.Utils;
 
 import java.util.*;
@@ -91,19 +92,19 @@ public class ReportYamlManager implements IDataManager{
     }
 
     @Override
-    public List<String> getPlayers() {
+    public Page<String> getPlayers(int page) {
         List<String> players = new ArrayList<>();
         for(Report report: reports){
             if(!players.contains(report.getPlayer())){
                 players.add(report.getPlayer());
             }
         }
-        return players;
+        return new Page<>(players.size(),players);
 
     }
 
     @Override
-    public List<String> getHistoryPlayers(String player,String target) {
+    public Page<String> getHistoryPlayers(String player,String target,int page) {
         List<String> players = new ArrayList<>();
         for(Report report: historyReports){
 
@@ -133,11 +134,11 @@ public class ReportYamlManager implements IDataManager{
 
             }
         }
-        return players;
+        return new Page<>(players.size(),players);
     }
 
     @Override
-    public ArrayList<Report> getReports(String player) {
+    public Page<Report> getReports(String player,int page) {
         ArrayList<Report> delegates = new ArrayList<>();
         for (Report report : reports){
             if(player != null){
@@ -151,7 +152,7 @@ public class ReportYamlManager implements IDataManager{
             }
 
         }
-        return delegates;
+        return new Page<>(delegates.size(),delegates);
     }
 
     @Override
@@ -174,14 +175,14 @@ public class ReportYamlManager implements IDataManager{
     }
 
     @Override
-    public ArrayList<Report> getHistoryReports(String player) {
+    public Page<Report> getHistoryReports(String player,int page) {
         ArrayList<Report> reports = new ArrayList<>();
         for(Report report : new ArrayList<>(historyReports)){
             if(report.getPlayer().equalsIgnoreCase(player)){
                 reports.add(report);
             }
         }
-        return reports;
+        return new Page<>(reports.size(),reports);
     }
 
     private void save(){
