@@ -20,8 +20,6 @@ import java.util.List;
  */
 public class DisplayHistoryForm {
 
-    private static final int ITEM_SIZE = 20;
-
 
     private ArrayList<BaseClickButton> clickButtons = new ArrayList<>();
 
@@ -105,10 +103,10 @@ public class DisplayHistoryForm {
 
         }
 
-        if(reportsList.total > ITEM_SIZE){
+        if(reportsList.total > ReportMainClass.PAGE_SIZE){
             if(page == 0){
                 addNext(buttons,target);
-            }else if(page * ITEM_SIZE < reportsList.total){
+            }else if(page * ReportMainClass.PAGE_SIZE < reportsList.total){
                 addLast(buttons,target);
                 addNext(buttons,target);
             }else{

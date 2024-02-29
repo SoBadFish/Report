@@ -35,6 +35,10 @@ public class ReportMainClass extends PluginBase {
 
     private Config adminPlayerConfig;
 
+    public static int PAGE_SIZE = 20;
+
+    public static int PAGE_OFFSET = 20;
+
     private PlayerInfoManager playerInfoManager;
 
     private List<String> adminPlayers = new ArrayList<>();
@@ -45,6 +49,8 @@ public class ReportMainClass extends PluginBase {
         mainClass = this;
         saveDefaultConfig();
         reloadConfig();
+        PAGE_SIZE = getConfig().getInt(" page-size",20);
+        PAGE_OFFSET = getConfig().getInt(" page-offset",20);
         sendMessageToConsole("&e举报系统正在加载");
         if(!initSql()){
             sendMessageToConsole("&c无法接入数据库!");

@@ -29,8 +29,6 @@ public class DisplayManageForm {
 
     private int reportId;
 
-    private static final int ITEM_SIZE = 20;
-
 
     public static int getRid(){
         return Utils.rand(31000,41000);

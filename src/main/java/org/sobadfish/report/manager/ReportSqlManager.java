@@ -7,6 +7,7 @@ import com.smallaswater.easysql.mysql.utils.TableType;
 import com.smallaswater.easysql.mysql.utils.Types;
 import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
 import com.smallaswater.easysql.v3.mysql.utils.SelectType;
+import org.sobadfish.report.ReportMainClass;
 import org.sobadfish.report.config.Report;
 import org.sobadfish.report.entity.Page;
 import org.sobadfish.report.entity.SqlCommand;
@@ -111,7 +112,7 @@ public class ReportSqlManager implements IDataManager{
         }
         Page<SqlData> pg = Page.selectPage(sqlManager,new SqlCommand("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_TIME+" FROM "
                 +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0")),
-                page,20);
+                page,ReportMainClass.PAGE_OFFSET);
 //        SqlDataList<SqlData> data = sqlManager.getData("SELECT DISTINCT "+SQL_COLUMN_PLAYER_NAME+","+SQL_COLUMN_TIME+" FROM "
 //                +SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
         ArrayList<String> strings = new ArrayList<>();
@@ -160,7 +161,7 @@ public class ReportSqlManager implements IDataManager{
 
         }
 
-        Page<SqlData> pg = Page.selectPage(sqlManager,sqlCommand,page,20);
+        Page<SqlData> pg = Page.selectPage(sqlManager,sqlCommand,page, ReportMainClass.PAGE_OFFSET);
 
         ArrayList<String> strings = new ArrayList<>();
         for(SqlData data1: pg.data){
@@ -200,7 +201,7 @@ public class ReportSqlManager implements IDataManager{
         }else{
             sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_TIME+" desc",new ChunkSqlType(1,"0"));
         }
-        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,20);
+        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,ReportMainClass.PAGE_OFFSET);
         for(SqlData data1: data.data){
             Report report = new Report(
                     data1.getInt(SQL_COLUMN_ID),
@@ -235,7 +236,7 @@ public class ReportSqlManager implements IDataManager{
         }else{
             sqlCommand = new SqlCommand("SELECT * FROM "+SQL_TABLE+" WHERE "+SQL_COLUMN_REPORT_DELETE_FLAG+" = ? order by "+SQL_COLUMN_REPORT_ADMIN_PLAYER_TIME+" desc",new ChunkSqlType(1,"1"));
         }
-        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,20);
+        Page<SqlData> data = Page.selectPage(sqlManager,sqlCommand,page,ReportMainClass.PAGE_OFFSET);
         for(SqlData data1: data.data){
             Report report = new Report(
                     data1.getInt(SQL_COLUMN_ID),

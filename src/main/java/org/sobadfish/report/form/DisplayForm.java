@@ -27,8 +27,6 @@ public class DisplayForm {
 
     private Page<String> players = new Page<>(0,new ArrayList<>());
 
-    private static final int ITEM_SIZE = 20;
-
     private int page = 0;
 
     private int id;
@@ -82,10 +80,10 @@ public class DisplayForm {
             ReportMainClass.sendMessageToObject("&c无举报记录",player);
             return;
         }
-        if(players.total > ITEM_SIZE){
+        if(players.total > ReportMainClass.PAGE_SIZE){
             if(page == 0){
                 addNext(buttons);
-            }else if(page * ITEM_SIZE < players.total){
+            }else if(page * ReportMainClass.PAGE_SIZE < players.total){
                 addLast(buttons);
                 addNext(buttons);
             }else{
