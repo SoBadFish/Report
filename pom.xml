@@ -6,7 +6,7 @@
 
     <groupId>org.sobadfish.report</groupId>
     <artifactId>Report</artifactId>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <distributionManagement>
         <repository>
             <id>maven-repo</id>
