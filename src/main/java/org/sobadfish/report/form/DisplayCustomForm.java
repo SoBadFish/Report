@@ -79,7 +79,8 @@ public class DisplayCustomForm {
     public void onListener(Player player,FormResponseCustom responseCustom){
         PlayerInfo info = ReportMainClass.getMainClass().getPlayerInfoManager().getInfo(player.getName());
         String playerName = responseCustom.getDropdownResponse(1).getElementContent();
-        String msg =  responseCustom.getDropdownResponse(2).getElementContent()+"&"+TextFormat.colorize('&',responseCustom.getInputResponse(3));
+        String msg =  responseCustom.getDropdownResponse(2).getElementContent()+
+                "&"+TextFormat.colorize('&',responseCustom.getInputResponse(3));
         if(info != null){
             switch (info.addReport(playerName)){
                 case SUCCESS:
