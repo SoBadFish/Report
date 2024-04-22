@@ -15,3 +15,15 @@ report-list:
   - "&c违规游戏名称"
   - "&l&c不正当言论"
   - "&6滥用游戏BUG"
+
+
+receive-online-report:
+  msg: "&b&l收到玩家举报信息&7》&r &e举报人: &a{player} &e被举报人: &a {target}"
+  info:
+    - "&a&l——————————————————————"
+    - "&e♦玩家: &a{player}"
+    - "&c♦举报♦"
+    - "&e♦玩家: &c{target}"
+    - "&a♦类型: &r{type}"
+    - "&b♦内容: &r{msg}"
+    - "&a&l——————————————————————"

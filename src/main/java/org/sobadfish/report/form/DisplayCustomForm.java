@@ -79,13 +79,43 @@ public class DisplayCustomForm {
     public void onListener(Player player,FormResponseCustom responseCustom){
         PlayerInfo info = ReportMainClass.getMainClass().getPlayerInfoManager().getInfo(player.getName());
         String playerName = responseCustom.getDropdownResponse(1).getElementContent();
-        String msg =  responseCustom.getDropdownResponse(2).getElementContent()+
-                "&"+TextFormat.colorize('&',responseCustom.getInputResponse(3));
+        String mg = TextFormat.colorize('&',responseCustom.getInputResponse(3));
+        if("".equalsIgnoreCase(mg.trim())){
+            mg = "无";
+        }
+        String type = responseCustom.getDropdownResponse(2).getElementContent();
+        String msg =  type+
+                "&"+mg;
         if(info != null){
             switch (info.addReport(playerName)){
                 case SUCCESS:
                     ReportMainClass.getDataManager().pullReport(playerName,msg,player.getName());
                     ReportMainClass.sendMessageToObject("&b举报成功！ 感谢你对服务器建设的支持 &7(等待管理员处理)",player);
+                    //TODO 增加反馈
+                    String rp = ReportMainClass.getMainClass().getMessageConfig().getString("receive-online-report.msg",
+                            "&b&l收到玩家举报信息&7》&r &e举报人: &a{player} &e被举报人: &a {target}");
+                    rp = rp.replace("{player}",player.getName())
+                            .replace("{target}",playerName);
+                    ReportMainClass.sendMessageToAdmin(rp);
+
+                    List<String> strings = ReportMainClass.getMainClass().getMessageConfig().getStringList("receive-online-report.info");
+                    List<String> displays = new ArrayList<>();
+                    int l = 0;
+                    if(strings.size() > 0){
+                        for(String string : strings){
+                            if(string.length() > l){
+                                l = string.length();
+                            }
+                            displays.add(string.replace("{player}",player.getName())
+                                    .replace("{target}",playerName)
+                                    .replace("{type}",type)
+                                    .replace("{msg}",mg));
+                        }
+                    }
+                    for(String ds: displays){
+                        ReportMainClass.sendMessageToAdmin(Utils.getCentontString(ds,l));
+                    }
+
                     break;
                 case COLD:
                     ReportMainClass.sendMessageToObject("&c举报太频繁了，请在 &r "+info.getCold()+" &c秒后重试",player);

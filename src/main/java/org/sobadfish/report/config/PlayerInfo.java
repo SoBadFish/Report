@@ -60,7 +60,7 @@ public class PlayerInfo {
         targetName.add(target);
         reportCount++;
         cold = ReportMainClass.getMainClass().getReportConfig().getCold();
-        ReportMainClass.sendMessageToAdmin("&r玩家 &2"+playerName+" &r 举报了 &e"+target+" ");
+//        ReportMainClass.sendMessageToAdmin("&r玩家 &2"+playerName+" &r 举报了 &e"+target+" ");
         return ReportType.SUCCESS;
     }
 
