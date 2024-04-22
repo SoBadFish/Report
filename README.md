@@ -3,14 +3,14 @@
 ------
 ![](https://img.shields.io/badge/license-GPL3.0-blue) 
 
-### :zap: Depends
+### ⚡ Depends
 
 #### MySQL 5.6
 MySQL数据库管理系统版本5.6。
 
 #### EasyMySQL
 
-[下载](https://motci.cn/view/SmallasWater/job/EasyMySQL/job/master/))
+[下载](https://motci.cn/view/SmallasWater/job/EasyMySQL/job/master/)
 
 
 ### ⚠️Server
