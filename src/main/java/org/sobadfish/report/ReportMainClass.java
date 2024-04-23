@@ -43,6 +43,8 @@ public class ReportMainClass extends PluginBase {
 
     private List<String> adminPlayers = new ArrayList<>();
 
+    public static String TITLE = "&7[&e举报系统&7] &r>&r ";
+
 
     @Override
     public void onEnable() {
@@ -51,6 +53,7 @@ public class ReportMainClass extends PluginBase {
         reloadConfig();
         PAGE_SIZE = getConfig().getInt(" page-size",20);
         PAGE_OFFSET = getConfig().getInt(" page-offset",20);
+        TITLE = getConfig().getString("title",TITLE);
         sendMessageToConsole("&e举报系统正在加载");
         if(!initSql()){
             sendMessageToConsole("&c无法接入数据库!");
@@ -133,27 +136,38 @@ public class ReportMainClass extends PluginBase {
     }
 
     public static void sendMessageToAdmin(String msg){
+        sendMessageToAdmin(msg,true);
+    }
+    public static void sendMessageToAdmin(String msg,boolean title){
         for(Player player: Server.getInstance().getOnlinePlayers().values()){
             if(player.isOp() || getMainClass().adminPlayers.contains(player.getName())){
-                sendMessageToObject(msg,player);
+                sendMessageToObject(msg,player,title);
             }
         }
     }
 
     public static void sendMessageToObject(String msg, CommandSender target){
+        sendMessageToObject(msg,target,true);
+    }
+
+    public static void sendMessageToObject(String msg, CommandSender target, boolean title){
         if(target == null){
-            mainClass.getLogger().info(formatString(msg));
+            mainClass.getLogger().info(formatString(msg,title));
         }else{
-            target.sendMessage(formatString(msg));
+            target.sendMessage(formatString(msg,title));
         }
     }
+
 
     public static void sendMessageToAll(String msg){
         Server.getInstance().broadcastMessage(formatString(msg));
     }
 
-
     private static String formatString(String str){
-        return TextFormat.colorize('&',"&7[&e举报系统&7] &r>&r "+str);
+        return formatString(str,true);
+    }
+
+    private static String formatString(String str,boolean title){
+        return TextFormat.colorize('&',(title?TITLE:"")+str);
     }
 }

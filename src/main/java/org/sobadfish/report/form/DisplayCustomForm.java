@@ -96,7 +96,7 @@ public class DisplayCustomForm {
                             "&b&l收到玩家举报信息&7》&r &e举报人: &a{player} &e被举报人: &a {target}");
                     rp = rp.replace("{player}",player.getName())
                             .replace("{target}",playerName);
-                    ReportMainClass.sendMessageToAdmin(rp);
+                    ReportMainClass.sendMessageToAdmin(rp,false);
 
                     List<String> strings = ReportMainClass.getMainClass().getMessageConfig().getStringList("receive-online-report.info");
                     List<String> displays = new ArrayList<>();
@@ -113,7 +113,7 @@ public class DisplayCustomForm {
                         }
                     }
                     for(String ds: displays){
-                        ReportMainClass.sendMessageToAdmin(Utils.getCentontString(ds,l));
+                        ReportMainClass.sendMessageToAdmin(Utils.getCentontString(ds,l),false);
                     }
 
                     break;
